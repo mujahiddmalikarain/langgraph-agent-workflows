@@ -1,6 +1,3 @@
-from dotenv import load_dotenv
-load_dotenv()
-
 from langgraph.types import Command
 from graph import app
 
