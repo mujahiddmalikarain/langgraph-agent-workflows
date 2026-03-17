@@ -1,0 +1,18 @@
+Password Reset
+
+Users can reset their password by going to:
+Settings → Security → Change Password.
+
+Password must contain:
+- 12 characters
+- uppercase
+- lowercase
+- number
+- symbol
+
+Billing Issues
+
+If a customer is charged twice:
+1. Verify subscription ID
+2. Refund the duplicate charge
+3. Notify customer within 24 hours.
