@@ -37,9 +37,30 @@ workflow.add_node("draft_response", draft_response)
 workflow.add_node("human_review", human_review)
 workflow.add_node("send_reply", send_reply)
 
-# Add fixed edges
+# Route after classification based on intent (node updates state["classification"])
+def route_after_classify(state):
+    c = state.get("classification") or {}
+    intent = c.get("intent", "question")
+    if intent == "bug":
+        return "bug_tracking"
+    if intent in ("billing", "complex"):
+        return "human_review"
+    if intent == "question":
+        return "search_documentation"
+    return "draft_response"
+
+# Fixed and conditional edges
 workflow.add_edge(START, "read_email")
 workflow.add_edge("read_email", "classify_intent")
+workflow.add_conditional_edges("classify_intent", route_after_classify)
+workflow.add_edge("search_documentation", "draft_response")
+workflow.add_edge("bug_tracking", "draft_response")
+workflow.add_edge("draft_response", "human_review")
+workflow.add_conditional_edges(
+    "human_review",
+    lambda s: "send_reply" if s.get("draft_response") else "__end__",
+    {"send_reply": "send_reply", "__end__": END},
+)
 workflow.add_edge("send_reply", END)
 
 # Durable execution:
