@@ -112,11 +112,13 @@ Relevant documentation:
 
 Write a helpful reply using the documentation.
 """
-
-    response = llm.invoke(prompt)
-
+    full_response = ""
+    for chunk in llm.stream(prompt):
+        if chunk.content:
+            print(chunk.content, end="", flush=True)
+            full_response += chunk.content   
     return {
-        "draft_response": response.content
+        "draft_response": full_response
     }
 
 

@@ -29,7 +29,9 @@ result = app.invoke(initial_state, config=config)
 if "__interrupt__" in result:
     print("\nGraph paused for human review.")
     print("Interrupt payload:")
-    print(result["__interrupt__"])
+    payload = result["__interrupt__"]
+    # Safe print for Windows console (cp1252 can't encode e.g. →)
+    print(str(payload).encode("ascii", errors="replace").decode("ascii"))
 
     # Simulate human approval
     human_input = Command(
